@@ -1,0 +1,14 @@
+{
+    "name": "juliens/wordpress-bundle",
+    "description": "A Bundle for wordpress and symfony integration",
+    "authors": [
+        {
+            "name": "Julien SALLEYRON",
+            "email": "juliens@php.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
