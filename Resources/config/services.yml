@@ -1,0 +1,55 @@
+parameters:
+    wordpress.include_dir: ./wordpress
+    wordpress.url_login: '' 
+    wordpress.loader.class: Generic\WordpressBundle\Services\WordpressLoader
+    wordpress.shortcode_loader.class: Generic\WordpressBundle\Services\WordpressShortcodeLoader
+    wordpress.metabox_loader.class: Generic\WordpressBundle\Services\WordpressMetaboxLoader
+    wordpress.shortcode_render.class: Generic\WordpressBundle\Services\ShortcodeRender
+    wordpress.post_repository.class: Generic\WordpressBundle\Repository\WordpressPostRepository
+    wordpress.post_factory.class: Generic\WordpressBundle\Repository\WordpressPostFactory
+    wordpress.controller_resolver.class: Generic\WordpressBundle\Resolver\ControllerResolver
+    wordpress.wordpress_extension.class: Generic\WordpressBundle\Extension\WordpressExtension
+    wordpress.template: GenericWordpressBundle:Default:post.html.twig
+
+services:
+  wordpress.security.authentication.provider:
+    class:  Generic\WordpressBundle\Security\WordpressAuthenticationProvider
+    arguments: [ '', %wordpress.include_dir%, %wordpress.url_login% ]
+
+  wordpress.security.authentication.listener:
+    class:  Generic\WordpressBundle\Security\WordpressAuthenticationListener
+    arguments: [@security.context, @security.authentication.manager]
+
+  wordpress.loader:
+    class : %wordpress.loader.class% 
+    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader ]
+
+  wordpress.shortcode_loader:
+   class: %wordpress.shortcode_loader.class%
+  
+  wordpress.metabox_loader:
+   class: %wordpress.metabox_loader.class%
+
+  wordpress.shortcode_render:
+   class: %wordpress.shortcode_render.class%
+   arguments: [ @templating.helper.actions, @router ]
+   tags:
+    - { name: wordpress.shortcode }
+    
+  wordpress.post_factory:
+    class: %wordpress.post_factory.class%
+
+  wordpress.post_repository:
+    class: %wordpress.post_repository.class%
+    arguments: [ @wordpress.loader, @wordpress.post_factory ]
+
+  wordpress.wordpress_extension:
+    class: %wordpress.wordpress_extension.class%
+    arguments: [ @wordpress.loader ]
+    tags:
+      - { name: twig.extension }
+
+#  wordpress.controller_resolver:
+#    class: %wordpress.controller_resolver.class%
+#    arguments: [@default.controller_resolver, @service_container ]
+

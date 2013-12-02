@@ -1,0 +1,3 @@
+generic_wordpress_security_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: GenericWordpressBundle:Default:index }
