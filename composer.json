@@ -2,7 +2,7 @@
     "name": "juliens/wordpress-bundle",
     "description": "A Bundle for wordpress and symfony integration",
     "autoload": {
-        "psr-0": { "Generic": "sources/sf2/WordpressBundle"
+        "psr-0": { "Generic": "sources/sf2/WordpressBundle" }
     },
     "authors": [
         {
