@@ -112,5 +112,9 @@ class WordpressLoader
         return $this->head;
     }
 
+    public function getShortcodes()
+    {
+        return $this->shortcodes;
+    }
 
 }
