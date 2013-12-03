@@ -76,7 +76,7 @@ class WordpressLoader
 
     public function loadPostInWordpressFromRequest(Request $request)
     {
-        $post_id = url_to_postid('index.php'.$request->getPathInfo());
+        $post_id = url_to_postid($request->getPathInfo());
         if ($post_id == null) {
             return false;
         }
