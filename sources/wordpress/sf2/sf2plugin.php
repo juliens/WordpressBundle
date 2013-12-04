@@ -17,19 +17,26 @@
                     //@settings_fields('wp_symfony_settings');
                     //@do_settings_fields('wp_symfony_settings');
                     $path = (get_option('symfony2_path'));
+                    $env = (get_option('symfony2_env'));
                     if ($path==null) {
                         $path = __DIR__.'/../../../../';
                         update_option('symfony2_path', $path);
                     }
+                    if ($env==null) {
+                        $env = 'dev';
+                        update_option('symfony2_env', $env);
+                    }
 
                 if (!file_exists($path.'app/bootstrap.php.cache')) {
+                    add_action( 'admin_footer', array( $this, 'symfony2_warning' ) );
                     return;
                 }
+
 
                 if ($kernel==null) {
                     $loader = require_once $path.'app/bootstrap.php.cache';
                     require_once  $path.'app/AppKernel.php';
-                    $kernel = new AppKernel('prod', true);
+                    $kernel = new AppKernel($env, true);
                     $kernel->loadClassCache();
                     $kernel->boot();
                     $this->kernel = $kernel;
@@ -44,6 +51,12 @@
                 $wp_loader->load();
                 
 
+        }
+        public function symfony2_warning()
+        {
+            echo "<div id='message' class='error'>";
+            echo "La configuration de votree path vers symfony2 est incorrect";
+            echo "</div>";
         }
         public function getContainer()
         {
@@ -61,6 +74,7 @@
 
         public function admin_init()
         {
+            //add_management_page( 'Custom Permalinks', 'Custom Permalinks', 'manage_options', 'my-unique-identifier', 'custom_permalinks_options_page' );
             if ($this->container!=null) {
                 $shortcodes = $this->getContainer()->get('wordpress.loader')->getShortcodes();
                 foreach ($shortcodes as $shortcode) {
@@ -68,11 +82,18 @@
                 }
             }
             register_setting('wp_symfony_settings', 'symfony2_path');
+            register_setting('wp_symfony_settings', 'symfony2_env');
         }
 
         public function menu_params()
         {
-            add_menu_page('Symfony2 configuration', 'Symfony2', 'manage_options', 'symfony2_options', array($this, 'menu_params_page'), plugins_url( 'sf2/images/icon.png' ), 6 ); 
+            add_options_page( 'Symfony2 configuration','Symfony2','manage_options','options_symfony2', array( $this, 'settings_symfony2' ) );
+            //add_menu_page('Symfony2 configuration', 'Symfony2', 'manage_options', 'symfony2_options', array($this, 'menu_params_page'), plugins_url( 'sf2/images/icon.png' ), 6 ); 
+        }
+
+        public function settings_symfony2()
+        {
+            include(dirname(__FILE__).'/settings.php');
         }
 
         public function menu_params_page()
