@@ -4,9 +4,11 @@ parameters:
     wordpress.loader.class: Generic\WordpressBundle\Services\WordpressLoader
     wordpress.shortcode_loader.class: Generic\WordpressBundle\Services\WordpressShortcodeLoader
     wordpress.metabox_loader.class: Generic\WordpressBundle\Services\WordpressMetaboxLoader
+    wordpress.admin_menu_loader.class: Generic\WordpressBundle\Services\WordpressAdminMenuLoader
     wordpress.shortcode_render.class: Generic\WordpressBundle\Services\ShortcodeRender
     wordpress.post_repository.class: Generic\WordpressBundle\Repository\WordpressPostRepository
     wordpress.post_factory.class: Generic\WordpressBundle\Repository\WordpressPostFactory
+    wordpress.admin_menu_symfony.class: Generic\WordpressBundle\Services\SymfonyAdminMenu
     wordpress.controller_resolver.class: Generic\WordpressBundle\Resolver\ControllerResolver
     wordpress.wordpress_extension.class: Generic\WordpressBundle\Extension\WordpressExtension
     wordpress.template: GenericWordpressBundle:Default:post.html.twig
@@ -22,7 +24,7 @@ services:
 
   wordpress.loader:
     class : %wordpress.loader.class% 
-    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader, @wordpress.post_factory ]
+    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader, @wordpress.admin_menu_loader, @wordpress.post_factory ]
 
   wordpress.shortcode_loader:
    class: %wordpress.shortcode_loader.class%
@@ -30,12 +32,20 @@ services:
   wordpress.metabox_loader:
    class: %wordpress.metabox_loader.class%
 
+  wordpress.admin_menu_loader:
+   class: %wordpress.admin_menu_loader.class%
+
   wordpress.shortcode_render:
    class: %wordpress.shortcode_render.class%
    arguments: [ @templating.helper.actions, @router ]
    tags:
     - { name: wordpress.shortcode }
     
+  wordpress.admin_menu_symfony:
+   class: %wordpress.admin_menu_symfony.class%
+   tags:
+    - { name: wordpress.admin_menu }
+
   wordpress.post_factory:
     class: %wordpress.post_factory.class%
 

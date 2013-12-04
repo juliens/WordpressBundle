@@ -27,5 +27,11 @@ class WordpressCompilerPass implements CompilerPassInterface
         foreach ($metaboxes_service_ids as $id=>$attr) {
             $wordpress_loader_definition->addMethodCall('addMetabox', array(new Reference($id)));
         }
+
+        $menu_service_ids = $container->findTaggedServiceIds('wordpress.admin_menu');
+
+        foreach ($menu_service_ids as $id=>$attr) {
+            $wordpress_loader_definition->addMethodCall('addAdminMenu', array(new Reference($id)));
+        }
     }
 }

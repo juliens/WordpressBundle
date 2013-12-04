@@ -10,22 +10,27 @@ class WordpressLoader
     private $wordpress_location = null;
     private $shortcodes = array();
     private $metaboxes = array();
+    private $admin_menus = array();
     private $wordpress_shortcode_loader = null;
     private $wordpress_metabox_loader = null;
+    private $wordpress_admin_menus_loader = null;
     private $wordpress_post_factory = null;
     private $metaboxes_already_load = false;
+    private $admin_already_load = false;
     private $metaboxes_loader_already_add = false;
     private $title = null;
     private $title_is_loaded = false;
     private $head_is_loaded = false;
     private $head = null;
     private $post_loaded = false;
+    private $menu_loader_already_add  = false;
 
-    public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader, $wordpress_post_factory)
+    public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader, $wordpress_admin_menus_loader, $wordpress_post_factory)
     {
         $this->wordpress_location = $wordpress_location;
         $this->wordpress_shortcode_loader = $wordpress_shortcode_loader;
         $this->wordpress_metabox_loader = $wordpress_metabox_loader;
+        $this->wordpress_admin_menu_loader = $wordpress_admin_menus_loader;
         $this->wordpress_post_factory = $wordpress_post_factory;
     }
 
@@ -46,6 +51,10 @@ class WordpressLoader
         if (!$this->metaboxes_loader_already_add) {
             add_action( 'add_meta_boxes', array($this, 'loadMetaboxes'));
             $this->metaboxes_loader_already_add = true;
+        }
+        if (!$this->menu_loader_already_add) {
+            add_action( 'admin_menu', array($this, 'loadAdminMenus'));
+            $this->menu_loader_already_add = true;
         }
     }
 
@@ -136,6 +145,20 @@ class WordpressLoader
     public function getShortcodes()
     {
         return $this->shortcodes;
+    }
+
+    public function addAdminMenu(AdminMenu $menu)
+    {
+        $this->admin_menus[] = $menu;
+        if ($this->admin_already_load) {
+            $this->wordpress_admin_menus_loader->loadAdminMenu($menu);
+        }
+    }
+
+    public function loadAdminMenus()
+    {
+        $this->menu_loader_already_add = true;
+        $this->wordpress_admin_menu_loader->loadAdminMenus($this->admin_menus);
     }
 
 }
