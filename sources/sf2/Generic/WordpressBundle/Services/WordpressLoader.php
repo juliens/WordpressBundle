@@ -91,10 +91,20 @@ class WordpressLoader
         if ($post_id == null) {
             return false;
         }
+        return $this->loadPostInWordpressFromPostId($post_id);
+        
+    }
+
+    public function loadPostInWordpressFromPostId($post_id)
+    {
         $this->post_loaded = true;
         $GLOBALS['wp_the_query']->query('page_id='.$post_id);
-        return true;
-        
+        $posts = $GLOBALS['wp_the_query']->get_posts();
+        if (count($posts)==0) {
+            throw new \Exception('Impossible de trouver le post courant');
+        }
+        $GLOBALS['post'] = $posts[0];
+        return true; 
     }
 
     public function getTitle()
