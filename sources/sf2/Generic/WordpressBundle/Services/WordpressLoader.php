@@ -12,6 +12,7 @@ class WordpressLoader
     private $metaboxes = array();
     private $wordpress_shortcode_loader = null;
     private $wordpress_metabox_loader = null;
+    private $wordpress_post_factory = null;
     private $metaboxes_already_load = false;
     private $metaboxes_loader_already_add = false;
     private $title = null;
@@ -20,11 +21,12 @@ class WordpressLoader
     private $head = null;
     private $post_loaded = false;
 
-    public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader)
+    public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader, $wordpress_post_factory)
     {
         $this->wordpress_location = $wordpress_location;
         $this->wordpress_shortcode_loader = $wordpress_shortcode_loader;
         $this->wordpress_metabox_loader = $wordpress_metabox_loader;
+        $this->wordpress_post_factory = $wordpress_post_factory;
     }
 
     public function isLoaded()
@@ -44,6 +46,15 @@ class WordpressLoader
         if (!$this->metaboxes_loader_already_add) {
             add_action( 'add_meta_boxes', array($this, 'loadMetaboxes'));
             $this->metaboxes_loader_already_add = true;
+        }
+    }
+
+    public function getCurrentPost()
+    {
+        if (isset($GLOBALS['post'])) {
+            return $this->wordpress_post_factory->createFromWP_Post($GLOBALS['post']);
+        } else {
+            return false;
         }
     }
 

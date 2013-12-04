@@ -22,7 +22,7 @@ services:
 
   wordpress.loader:
     class : %wordpress.loader.class% 
-    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader ]
+    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader, @wordpress.post_factory ]
 
   wordpress.shortcode_loader:
    class: %wordpress.shortcode_loader.class%
