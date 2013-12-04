@@ -18,6 +18,7 @@
                     //@do_settings_fields('wp_symfony_settings');
                     $path = (get_option('symfony2_path'));
                     $env = (get_option('symfony2_env'));
+                    $url = (get_option('symfony2_url'));
                     if ($path==null) {
                         $path = __DIR__.'/../../../../';
                         update_option('symfony2_path', $path);
@@ -46,16 +47,33 @@
                     $this->kernel = $kernel;
                     $this->container = $kernel->getContainer();
                 }
+                if ($url!=null) {
+                    preg_match('%([^:]*):\/\/([^\/]*)(\/.*)%', $url, $matches);
+                    if (count($matches)==4) {
+                        $context = $this->container->get('router')->getContext();
+                        $context->setHost($matches[2]);
+                        $context->setScheme($matches[1]);
+                        $context->setBaseUrl($matches[3]);
+                    } else {
+                        add_action( 'admin_footer', array( $this, 'symfony2_url_warning' ) );
 
+                    }
+                }
                 $wp_loader = $this->container->get('wordpress.loader');
                 $wp_loader->load();
                 
 
         }
+        public function symfony2_url_warning()
+        {
+            echo "<div id='message' class='error'>";
+            echo "La configuration de votre url de symfony2 est incorrect. Vous devez mettre quelque chose du style http://serveur/path/vers/app.php";
+            echo "</div>";
+        }
         public function symfony2_warning()
         {
             echo "<div id='message' class='error'>";
-            echo "La configuration de votree path vers symfony2 est incorrect";
+            echo "La configuration de votre path vers symfony2 est incorrect. Vous devez mettre quelque chose comme /home/moi/monsite/app/";
             echo "</div>";
         }
         public function getContainer()
@@ -82,6 +100,7 @@
                 }
             }
             register_setting('wp_symfony_settings', 'symfony2_path');
+            register_setting('wp_symfony_settings', 'symfony2_url');
             register_setting('wp_symfony_settings', 'symfony2_env');
         }
 

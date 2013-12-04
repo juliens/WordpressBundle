@@ -29,6 +29,15 @@ $env = get_option('symfony2_env');
 </td>
 
             </tr>
+        <tr valign="top">
+            <th scope="row">Url de Symfony</th>
+<?php 
+$url = get_option('symfony2_url');
+?>
+            <td><input type="text" name="symfony2_url" id="symfony2_url" style="width:300px" value="<?php echo $url; ?>" />
+</td>
+
+            </tr>
 <tr>
 <td colspan="2">
 <?php @submit_button() ?>
