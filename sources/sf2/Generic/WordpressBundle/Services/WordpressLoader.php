@@ -161,4 +161,9 @@ class WordpressLoader
         $this->wordpress_admin_menu_loader->loadAdminMenus($this->admin_menus);
     }
 
+    public function getPageAdminUrl($page_id)
+    {
+        return get_option('siteurl').'/wp-admin/post.php?post='.$page_id.'&action)edit';
+    }
+
 }
