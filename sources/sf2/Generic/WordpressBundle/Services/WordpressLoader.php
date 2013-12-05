@@ -101,7 +101,7 @@ class WordpressLoader
             return false;
         }
         return $this->loadPostInWordpressFromPostId($post_id);
-        
+
     }
 
     public function loadPostInWordpressFromPostId($post_id)
@@ -113,7 +113,7 @@ class WordpressLoader
             throw new \Exception('Impossible de trouver le post courant');
         }
         $GLOBALS['post'] = $posts[0];
-        return true; 
+        return true;
     }
 
     public function getTitle()
@@ -163,7 +163,7 @@ class WordpressLoader
 
     public function getPageAdminUrl($page_id)
     {
-        return get_option('siteurl').'/wp-admin/post.php?post='.$page_id.'&action)edit';
+        return get_option('siteurl').'/wp-admin/post.php?post='.$page_id.'&action=edit';
     }
 
 }
