@@ -97,6 +97,7 @@ class WordpressLoader
     public function loadPostInWordpressFromRequest(Request $request)
     {
         $post_id = url_to_postid($request->getPathInfo());
+        $post_id = ($post_id!=null) ? $post_id : url_to_postid('index.php'.$request->getPathInfo());
         if ($post_id == null) {
             return false;
         }
@@ -140,6 +141,13 @@ class WordpressLoader
             }
         }
         return $this->head;
+    }
+
+    public function getContent()
+    {
+        //A vérifier mais si on appel pas wp_head le content est vide
+        $this->getHead();
+        return get_the_content();
     }
 
     public function getShortcodes()
