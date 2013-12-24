@@ -3,6 +3,8 @@
 namespace Generic\WordpressBundle\Services;
 
 use Symfony\Component\HttpFoundation\Request;
+use Generic\WordpressBundle\Menu\MenuItem;
+use Generic\WordpressBundle\Menu\Menu;
 
 
 class WordpressLoader
@@ -32,6 +34,31 @@ class WordpressLoader
         $this->wordpress_metabox_loader = $wordpress_metabox_loader;
         $this->wordpress_admin_menu_loader = $wordpress_admin_menus_loader;
         $this->wordpress_post_factory = $wordpress_post_factory;
+    }
+
+    public function getMenu($id)
+    {
+        $this->load();
+        $menu = wp_get_nav_menu_object('test');
+        $items = wp_get_nav_menu_items($menu->term_id);
+        $all_items_inline = array();
+        $root_items = array ();
+        foreach ($items as $item) {
+            $objectItem = new MenuItem($item);
+            if ($item->menu_item_parent!=0) {
+                if (!isset($all_items_inline[$item->menu_item_parent])) {
+                    throw new \Exception('Erreur parent introuvable');
+                }
+                $objectItem->setParent($all_items_inline[$item->menu_item_parent]);
+                $objectItem->getParent()->addChild($objectItem);
+            }
+            $all_items_inline[$objectItem->getId()] = $objectItem;
+            if ($objectItem->getParent()===null) {
+                $root_items[] = $objectItem;
+            }
+        }
+        return new Menu($menu->term_id, $root_items);
+
     }
 
     public function isLoaded()
