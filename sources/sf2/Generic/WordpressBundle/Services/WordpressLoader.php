@@ -26,6 +26,7 @@ class WordpressLoader
     private $head = null;
     private $post_loaded = false;
     private $menu_loader_already_add  = false;
+    private $menus = array();
 
     public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader, $wordpress_admin_menus_loader, $wordpress_post_factory)
     {
@@ -40,8 +41,14 @@ class WordpressLoader
     {
         $this->load();
 
-        if (!$menu = wp_get_nav_menu_object($name)) {
-            throw new \Exception('Erreur menu introuvable');
+        if(array_key_exists($name, $this->menus)) {
+            $menu = $this->menus[$name];
+        } else {
+            if ($menu = wp_get_nav_menu_object($name)) {
+                $this->menus[$menu->name] = $menu;
+            } else {
+                throw new \Exception('Erreur menu introuvable');
+            }
         }
 
         $items = wp_get_nav_menu_items($menu->term_id);
