@@ -39,7 +39,11 @@ class WordpressLoader
     public function getMenu($name)
     {
         $this->load();
-        $menu = wp_get_nav_menu_object($name);
+
+        if (!$menu = wp_get_nav_menu_object($name)) {
+            throw new \Exception('Erreur menu introuvable');
+        }
+
         $items = wp_get_nav_menu_items($menu->term_id);
         $all_items_inline = array();
         $root_items = array ();
