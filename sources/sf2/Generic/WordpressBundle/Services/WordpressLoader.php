@@ -39,37 +39,36 @@ class WordpressLoader
 
     public function getMenu($name)
     {
-        $this->load();
-
         if(array_key_exists($name, $this->menus)) {
-            $menu = $this->menus[$name];
+            return $this->menus[$name];
         } else {
-            if ($menu = wp_get_nav_menu_object($name)) {
-                $this->menus[$menu->name] = $menu;
-            } else {
+            $this->load();
+            if (!$menu = wp_get_nav_menu_object($name)) {
                 throw new \Exception('Erreur menu introuvable');
             }
-        }
 
-        $items = wp_get_nav_menu_items($menu->term_id);
-        $all_items_inline = array();
-        $root_items = array ();
-        foreach ($items as $item) {
-            $objectItem = new MenuItem($item);
-            if ($item->menu_item_parent!=0) {
-                if (!isset($all_items_inline[$item->menu_item_parent])) {
-                    throw new \Exception('Erreur parent introuvable');
+            $items = wp_get_nav_menu_items($menu->term_id);
+            $all_items_inline = array();
+            $root_items = array ();
+            foreach ($items as $item) {
+                $objectItem = new MenuItem($item);
+                if ($item->menu_item_parent!=0) {
+                    if (!isset($all_items_inline[$item->menu_item_parent])) {
+                        throw new \Exception('Erreur parent introuvable');
+                    }
+                    $objectItem->setParent($all_items_inline[$item->menu_item_parent]);
+                    $objectItem->getParent()->addChild($objectItem);
                 }
-                $objectItem->setParent($all_items_inline[$item->menu_item_parent]);
-                $objectItem->getParent()->addChild($objectItem);
+                $all_items_inline[$objectItem->getId()] = $objectItem;
+                if ($objectItem->getParent()===null) {
+                    $root_items[] = $objectItem;
+                }
             }
-            $all_items_inline[$objectItem->getId()] = $objectItem;
-            if ($objectItem->getParent()===null) {
-                $root_items[] = $objectItem;
-            }
-        }
-        return new Menu($menu->term_id, $root_items);
 
+            $this->menus[$name] = new Menu($menu->term_id, $root_items);
+
+            return $this->menus[$name];
+        }
     }
 
     public function isLoaded()
