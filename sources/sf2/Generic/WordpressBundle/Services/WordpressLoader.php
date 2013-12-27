@@ -36,10 +36,10 @@ class WordpressLoader
         $this->wordpress_post_factory = $wordpress_post_factory;
     }
 
-    public function getMenu($id)
+    public function getMenu($name)
     {
         $this->load();
-        $menu = wp_get_nav_menu_object('test');
+        $menu = wp_get_nav_menu_object($name);
         $items = wp_get_nav_menu_items($menu->term_id);
         $all_items_inline = array();
         $root_items = array ();
