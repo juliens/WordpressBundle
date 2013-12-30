@@ -26,6 +26,7 @@ class WordpressLoader
     private $head = null;
     private $post_loaded = false;
     private $menu_loader_already_add  = false;
+    private $menus = array();
 
     public function __construct($wordpress_location, $wordpress_shortcode_loader, $wordpress_metabox_loader, $wordpress_admin_menus_loader, $wordpress_post_factory)
     {
@@ -36,29 +37,37 @@ class WordpressLoader
         $this->wordpress_post_factory = $wordpress_post_factory;
     }
 
-    public function getMenu($id)
+    public function getMenu($name)
     {
-        $this->load();
-        $menu = wp_get_nav_menu_object('test');
-        $items = wp_get_nav_menu_items($menu->term_id);
-        $all_items_inline = array();
-        $root_items = array ();
-        foreach ($items as $item) {
-            $objectItem = new MenuItem($item);
-            if ($item->menu_item_parent!=0) {
-                if (!isset($all_items_inline[$item->menu_item_parent])) {
-                    throw new \Exception('Erreur parent introuvable');
-                }
-                $objectItem->setParent($all_items_inline[$item->menu_item_parent]);
-                $objectItem->getParent()->addChild($objectItem);
-            }
-            $all_items_inline[$objectItem->getId()] = $objectItem;
-            if ($objectItem->getParent()===null) {
-                $root_items[] = $objectItem;
-            }
-        }
-        return new Menu($menu->term_id, $root_items);
+        if(!array_key_exists($name, $this->menus)) {
+            $this->load();
 
+            if (!$menu = wp_get_nav_menu_object($name)) {
+                throw new \Exception('Erreur menu introuvable');
+            }
+
+            $items = wp_get_nav_menu_items($menu->term_id);
+            $all_items_inline = array();
+            $root_items = array ();
+            foreach ($items as $item) {
+                $objectItem = new MenuItem($item);
+                if ($item->menu_item_parent!=0) {
+                    if (!isset($all_items_inline[$item->menu_item_parent])) {
+                        throw new \Exception('Erreur parent introuvable');
+                    }
+                    $objectItem->setParent($all_items_inline[$item->menu_item_parent]);
+                    $objectItem->getParent()->addChild($objectItem);
+                }
+                $all_items_inline[$objectItem->getId()] = $objectItem;
+                if ($objectItem->getParent()===null) {
+                    $root_items[] = $objectItem;
+                }
+            }
+
+            $this->menus[$name] = new Menu($menu->term_id, $root_items);
+        }
+
+        return $this->menus[$name];
     }
 
     public function isLoaded()
