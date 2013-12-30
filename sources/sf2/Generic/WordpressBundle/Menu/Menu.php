@@ -26,7 +26,7 @@ class Menu
     private function setActiveInMenuItems($post_id, $menus)
     {
         foreach ($menus as $menu) {
-            if ($menu->getId()==$post_id) {
+            if ($menu->getId()==$post_id || $menu->getPostId()==$post_id) {
                 $menu->setActive();
                 return true;
             }

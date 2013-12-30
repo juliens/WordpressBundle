@@ -8,6 +8,7 @@ class MenuItem
     private $childs = array();
 
     private $id = null;
+    private $post_id = null;
     private $type = null;
     private $url = null;
     private $title = null;
@@ -17,6 +18,7 @@ class MenuItem
     public function __construct($menu_post)
     {
         $this->id = $menu_post->ID;
+        $this->post_id = $menu_post->object_id;
         $this->type = $menu_post->object;
         $this->url = $menu_post->url;
         $this->title = $menu_post->title;
@@ -48,6 +50,11 @@ class MenuItem
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getPostId()
+    {
+        return $this->post_id;
     }
 
     public function getType()
