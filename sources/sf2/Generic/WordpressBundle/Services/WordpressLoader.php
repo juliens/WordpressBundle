@@ -39,10 +39,9 @@ class WordpressLoader
 
     public function getMenu($name)
     {
-        if(array_key_exists($name, $this->menus)) {
-            return $this->menus[$name];
-        } else {
+        if(!array_key_exists($name, $this->menus)) {
             $this->load();
+
             if (!$menu = wp_get_nav_menu_object($name)) {
                 throw new \Exception('Erreur menu introuvable');
             }
@@ -66,9 +65,9 @@ class WordpressLoader
             }
 
             $this->menus[$name] = new Menu($menu->term_id, $root_items);
-
-            return $this->menus[$name];
         }
+
+        return $this->menus[$name];
     }
 
     public function isLoaded()
