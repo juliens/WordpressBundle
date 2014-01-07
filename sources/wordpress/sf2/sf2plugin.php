@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 Plugin Name: Integration Symfony 2
 Author: J. Salleyron
@@ -70,7 +70,9 @@ class Sf2Plugin {
             $kernel->boot();
             $this->kernel = $kernel;
             $this->container = $kernel->getContainer();
-            $this->container->get('session')->set('test','test');
+            if ($this->container->get('session')->isStarted() == false) {
+                $this->container->get('session')->start();
+            }
         } else {
             $this->kernel = $kernel;
             $this->container = $kernel->getContainer();
@@ -151,7 +153,7 @@ class Sf2Plugin {
     public function menu_params()
     {
         add_options_page( 'Symfony2 configuration','Symfony2','manage_options','options_symfony2', array( $this, 'settings_symfony2' ) );
-        //add_menu_page('Symfony2 configuration', 'Symfony2', 'manage_options', 'symfony2_options', array($this, 'menu_params_page'), plugins_url( 'sf2/images/icon.png' ), 6 ); 
+        //add_menu_page('Symfony2 configuration', 'Symfony2', 'manage_options', 'symfony2_options', array($this, 'menu_params_page'), plugins_url( 'sf2/images/icon.png' ), 6 );
     }
 
     public function settings_symfony2()
