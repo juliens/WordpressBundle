@@ -144,12 +144,14 @@ class WordpressLoader
     public function loadPostInWordpressFromPostId($post_id)
     {
         $this->post_loaded = true;
-        $GLOBALS['wp_the_query']->query('page_id='.$post_id);
-        $posts = $GLOBALS['wp_the_query']->get_posts();
-        if (count($posts)==0) {
+
+        $post = \WP_Post::get_instance($post_id);
+
+        if (!$post) {
             throw new \Exception('Impossible de trouver le post courant');
         }
-        $GLOBALS['post'] = $posts[0];
+
+        $GLOBALS['post'] = $post;
         return true;
     }
 
