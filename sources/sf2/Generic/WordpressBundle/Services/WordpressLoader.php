@@ -103,6 +103,15 @@ class WordpressLoader
         }
     }
 
+    public function getCurrentCategory()
+    {
+        if (isset($GLOBALS['category'])) {
+            return $GLOBALS['category'];
+        } else {
+            return false;
+        }
+    }
+
     public function loadMetaboxes()
     {
         $this->metaboxes_already_load = true;
@@ -141,6 +150,15 @@ class WordpressLoader
 
     }
 
+    public function loadCategoryInWordpressFromRequest(Request $request)
+    {
+        $path_info = $request->getPathInfo();
+        if (preg_match('/\/category\/(.*)\//', $path_info, $matches)) {
+            return $this->loadCategoryInWordpressFromCategorySlug($matches[1]);
+        }
+        return false;
+    }
+
     public function loadPostInWordpressFromPostId($post_id)
     {
         $this->post_loaded = true;
@@ -152,6 +170,16 @@ class WordpressLoader
         }
 
         $GLOBALS['post'] = $post;
+        return true;
+    }
+
+    public function loadCategoryInWordpressFromCategorySlug($category_slug)
+    {
+        $category = get_category_by_slug($category_slug);
+        if (!$category) {
+            throw new \Exception('Impossible de trouver la catégorie courante');
+        }
+        $GLOBALS['category'] = $category;
         return true;
     }
 
@@ -183,7 +211,7 @@ class WordpressLoader
 
     public function getContent()
     {
-        //A vérifier mais si on appel pas wp_head le content est vide
+        //A vérifier mais si on appelle pas wp_head le content est vide
         $this->getHead();
         return get_the_content();
     }
