@@ -153,7 +153,7 @@ class WordpressLoader
     public function loadCategoryInWordpressFromRequest(Request $request)
     {
         $path_info = $request->getPathInfo();
-        if (preg_match('/\/category\/(.*)\//', $path_info, $matches)) {
+        if (preg_match('/\/'.get_option('category_base').'\/(.*)\//', $path_info, $matches)) {
             return $this->loadCategoryInWordpressFromCategorySlug($matches[1]);
         }
         return false;
