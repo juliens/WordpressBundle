@@ -79,7 +79,7 @@ class MenuItem
 
     public function setActiveChild(MenuItem $child)
     {
-        if (!in_array($child, $this->childs)) {
+        if (!in_array($child, $this->childs, true)) {
             throw new \Exception('Cannot set non child menuitem has active child');
         }
         $this->active_child = $child;
