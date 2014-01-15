@@ -24,6 +24,7 @@ class WordpressToken extends AbstractToken
     public function __construct()
     {
         $this->setAuthenticated(false);
+        parent::__construct();
     }
 
     public function getCredentials()

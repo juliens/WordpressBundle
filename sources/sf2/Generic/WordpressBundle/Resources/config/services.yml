@@ -1,5 +1,4 @@
 parameters:
-    wordpress.include_dir: ./wordpress
     wordpress.url_login: '' 
     wordpress.loader.class: Generic\WordpressBundle\Services\WordpressLoader
     wordpress.shortcode_loader.class: Generic\WordpressBundle\Services\WordpressShortcodeLoader
@@ -16,7 +15,7 @@ parameters:
 services:
   wordpress.security.authentication.provider:
     class:  Generic\WordpressBundle\Security\WordpressAuthenticationProvider
-    arguments: [ '', %wordpress.include_dir%, %wordpress.url_login% ]
+    arguments: [ '', @service_container, 'wordpress.loader', %wordpress.url_login% ]
 
   wordpress.security.authentication.listener:
     class:  Generic\WordpressBundle\Security\WordpressAuthenticationListener

@@ -25,38 +25,33 @@ class WordpressAuthenticationListener implements ListenerInterface
     public function handle(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-        if ($request->getSession()->get('token_id')!=null && $request->getSession()->get($request->getSession()->get('token_id')) instanceof WordpressToken) {
-            $this->securityContext->setToken($request->getSession()->get($request->getSession()->get('token_id')));
-        } else {
-
-            try {
-                $response = $this->authenticationManager->authenticate(new WordpressToken());
-                if ($response->isAuthenticated()) {
-                    $this->securityContext->setToken($response);
-                    $session = $request->getSession();
-                    $token_id = uniqid();
-                    $session->set('token_id', $token_id);
-                    $session->set($token_id, $response);
-                } elseif ($response->getRedirectUrl()!=null) {
-		    $url = $response->getRedirectUrl();
-		    if (strpos('?',$url)!==false) {
-			$separator = '&';
-		    } else {
-			$separator = '?';
-		    }
-		    $url .= $separator.'redirect_to='.urlencode($request->getUri());
-                    $response = new RedirectResponse($url);
-                    $event->setResponse($response);
+        try {
+            $response = $this->authenticationManager->authenticate(new WordpressToken());
+            if ($response->isAuthenticated()) {
+                $this->securityContext->setToken($response);
+                $session = $request->getSession();
+                $token_id = uniqid();
+                $session->set('token_id', $token_id);
+                $session->set($token_id, $response);
+            } elseif ($response->getRedirectUrl()!=null) {
+                $url = $response->getRedirectUrl();
+                if (strpos('?',$url)!==false) {
+                    $separator = '&';
                 } else {
-                    $response = new Response();
-                    $response->setStatusCode(403);
-                    $event->setResponse($response);
+                    $separator = '?';
                 }
-            } catch (AuthenticationException $e) {
+                $url .= $separator.'redirect_to='.urlencode($request->getUri());
+                $response = new RedirectResponse($url);
+                $event->setResponse($response);
+            } else {
                 $response = new Response();
                 $response->setStatusCode(403);
                 $event->setResponse($response);
             }
+        } catch (AuthenticationException $e) {
+            $response = new Response();
+            $response->setStatusCode(403);
+            $event->setResponse($response);
         }
     }
 }
