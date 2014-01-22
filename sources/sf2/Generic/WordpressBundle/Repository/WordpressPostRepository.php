@@ -16,7 +16,7 @@ class WordpressPostRepository
     }
     public function get($post_id)
     {
-        return $this->wordpress_post_factory(\WP_Post::get_instance($post_id));
+        return $this->wordpress_post_factory->createFromWP_Post(\WP_Post::get_instance($post_id));
     }
 
     public function save(Post $post)
@@ -25,7 +25,7 @@ class WordpressPostRepository
         if ($post->getID()!=null) {
             wp_update_post($post->getWPPost());
         } else {
-            $post_id = wp_insert_post( $post->getWPPost(), $wp_error );          
+            $post_id = wp_insert_post( $post->getWPPost(), $wp_error );
             $post->setID($post_id);
         }
         $metas = get_metadata('post', $post->getId());
