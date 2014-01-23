@@ -70,7 +70,7 @@ class WordpressPostRepository
 
     }
 
-    private function getPostsFromWordpressQuery($query)
+    public function getPostsFromWordpressQuery($query)
     {
         $query = new \WP_Query($query);
         $posts = $query->get_posts();
@@ -82,7 +82,7 @@ class WordpressPostRepository
 
     }
 
-    private function getPostFromWordpressQuery($query)
+    public function getPostFromWordpressQuery($query)
     {
         $posts = $this->getPostsFromWordpressQuery($query);
         if (isset ($posts[0])) {
