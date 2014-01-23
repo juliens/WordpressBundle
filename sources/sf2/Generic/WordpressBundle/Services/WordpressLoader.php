@@ -175,6 +175,8 @@ class WordpressLoader
 
     public function loadCategoryInWordpressFromCategorySlug($category_slug)
     {
+        $category_slug = end(explode("/", $category_slug));
+
         $category = get_category_by_slug($category_slug);
         if (!$category) {
             throw new \Exception('Impossible de trouver la catégorie courante');
