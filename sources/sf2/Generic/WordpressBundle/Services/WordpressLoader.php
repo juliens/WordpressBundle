@@ -152,9 +152,9 @@ class WordpressLoader
 
     public function loadCategoryInWordpressFromRequest(Request $request)
     {
-        $path_info = $request->getPathInfo();
-        if (preg_match('/\/'.get_option('category_base').'\/(.*)\//', $path_info, $matches)) {
-            return $this->loadCategoryInWordpressFromCategorySlug($matches[1]);
+        $filename = pathinfo($request->getPathInfo(), PATHINFO_FILENAME);
+        if (!empty($filename)) {
+            return $this->loadCategoryInWordpressFromCategorySlug($filename);
         }
         return false;
     }
@@ -175,11 +175,9 @@ class WordpressLoader
 
     public function loadCategoryInWordpressFromCategorySlug($category_slug)
     {
-        $category_slug = end(explode("/", $category_slug));
-
         $category = get_category_by_slug($category_slug);
         if (!$category) {
-            throw new \Exception('Impossible de trouver la catégorie courante');
+            return false;
         }
         $GLOBALS['category'] = $category;
         return true;
