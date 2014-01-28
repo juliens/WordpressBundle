@@ -14,6 +14,7 @@ class MenuItem
     private $title = null;
     private $active = false;
     private $active_child = null;
+    private $blank = false;
 
     public function __construct($menu_post)
     {
@@ -22,6 +23,11 @@ class MenuItem
         $this->type = $menu_post->object;
         $this->url = $menu_post->url;
         $this->title = $menu_post->title;
+
+        if($menu_post->target == '_blank'){
+            $this->blank = true;
+        }
+
     }
 
     public function setParent(MenuItem $parent)
@@ -112,6 +118,11 @@ class MenuItem
     public function hasActiveChild()
     {
         return ($this->getActiveChild()!=null);
+    }
+
+    public function getBlank()
+    {
+        return $this->blank;
     }
 
 }
