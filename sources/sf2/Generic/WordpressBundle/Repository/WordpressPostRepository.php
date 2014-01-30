@@ -14,9 +14,13 @@ class WordpressPostRepository
         $this->wordpress_loader->load();
         $this->wordpress_post_factory = $wordpress_post_factory;
     }
+
     public function get($post_id)
     {
-        return $this->wordpress_post_factory->createFromWP_Post(\WP_Post::get_instance($post_id));
+        if (($post = \WP_Post::get_instance($post_id)) ) {
+            return $this->wordpress_post_factory->createFromWP_Post(\WP_Post::get_instance($post_id));
+        }
+        return null;
     }
 
     public function save(Post $post)
