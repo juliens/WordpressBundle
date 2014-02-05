@@ -25,6 +25,7 @@ class WordpressLoader
     private $head_is_loaded = false;
     private $head = null;
     private $post_loaded = false;
+    private $category_loaded = false;
     private $menu_loader_already_add  = false;
     private $menus = array();
 
@@ -179,7 +180,27 @@ class WordpressLoader
         if (!$category) {
             return false;
         }
+        $this->category_loaded = true;
         $GLOBALS['category'] = $category;
+        return true;
+    }
+    
+    private function loadTheQuery()
+    {
+        if($this->post_loaded){
+            $args = array(
+                'p' => $GLOBALS['post']->ID,
+                'post_type' => array ('page','post'),
+            );  
+        }elseif($this->category_loaded){            
+            $args = array(
+                'cat' => $GLOBALS['category']->term_id,                
+            );
+        }
+        $query = new \WP_Query($args);
+        $GLOBALS['wp_the_query'] = $query;
+        $GLOBALS['wp_query'] = $query;
+        
         return true;
     }
 
@@ -200,7 +221,8 @@ class WordpressLoader
     {
         if ($this->head_is_loaded===false) {
             $this->head_is_loaded = true;
-            if ($this->post_loaded) {
+            if ($this->post_loaded || $this->category_loaded) {
+                $this->loadTheQuery();
                 ob_start();
                 wp_head();
                 $this->head = ob_get_clean();
