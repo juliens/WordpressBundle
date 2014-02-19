@@ -208,9 +208,20 @@ class WordpressLoader
     {
         if ($this->title_is_loaded===false) {
             $this->title_is_loaded = true;
-            if ($this->post_loaded) {
-                ob_start();
-                the_title();
+            if ($this->post_loaded || $this->category_loaded) {                
+                $this->loadTheQuery();
+                ob_start();                
+                $object = $GLOBALS['wp_query']->get_queried_object();                
+                if(function_exists('wpseo_get_value')) {//on regarde si le plugin WordpressSEO est présent
+                    if($this->post_loaded){
+                        $titleSeo = wpseo_get_value( 'title', $object->ID );
+                    }elseif($this->category_loaded){
+                        $titleSeo = wpseo_get_term_meta( $object, $object->taxonomy, 'title' );
+                    }                  
+                    echo $titleSeo;
+                }else{
+                    the_title(); 
+                }               
                 $this->title = ob_get_clean();
             }
         }
