@@ -63,6 +63,7 @@ class WordpressLoader
                 if ($objectItem->getParent()===null) {
                     $root_items[] = $objectItem;
                 }
+                $objectItem->setCss(get_post_meta($item->ID, '_menu_item_classes', true));
             }
 
             $this->menus[$name] = new Menu($menu->term_id, $root_items);

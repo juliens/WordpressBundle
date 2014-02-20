@@ -15,6 +15,7 @@ class MenuItem
     private $active = false;
     private $active_child = null;
     private $blank = false;
+    private $css = null;
 
     public function __construct($menu_post)
     {
@@ -125,5 +126,12 @@ class MenuItem
         return $this->blank;
     }
 
-}
+    public function setCss($css){
+        $this->css = $css;
+        return $this;
+    }
 
+    public function getCss(){
+        return $this->css;
+    }
+}
