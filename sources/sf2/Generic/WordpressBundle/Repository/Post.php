@@ -7,6 +7,7 @@ class Post
     private $wp_post;
     private $metas = array();
     private $type = 'post';
+    private $tags;
 
     public function getWPPost()
     {
@@ -48,7 +49,6 @@ class Post
         if ($this->wp_post->ID!=null) {
             $this->metas = get_metadata('post', $this->wp_post->ID); 
         }
-
     }
 
     public function getType()
@@ -101,5 +101,18 @@ class Post
         $this->wp_post->$key = $value;
         return $this;
 
+    }
+
+    public function getTags()
+    {
+        if (is_null($this->tags)) {
+            $this->tags = array();
+            // tags
+            $tags = wp_get_post_tags($this->wp_post->ID);
+            foreach($tags as $tag) {
+                $this->tags[] = (array) $tag;
+            }
+        }
+        return $this->tags;
     }
 }
