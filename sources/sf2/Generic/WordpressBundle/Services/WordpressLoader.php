@@ -76,6 +76,11 @@ class WordpressLoader
     {
         return function_exists('wp_head');
     }
+    
+    public function isLoadedWithAdmin()
+    {
+        return function_exists('is_plugin_active');
+    }
 
     public function load()
     {
@@ -83,6 +88,41 @@ class WordpressLoader
             require $this->wordpress_location.'/wp-load.php';
             foreach (get_defined_vars() as $key=>$value) {
                 $GLOBALS[$key] = $value;
+            }
+        }
+        $this->loadShortcodes();
+        if (!$this->metaboxes_loader_already_add) {
+            add_action( 'add_meta_boxes', array($this, 'loadMetaboxes'));
+            $this->metaboxes_loader_already_add = true;
+        }
+        if (!$this->menu_loader_already_add) {
+            add_action( 'admin_menu', array($this, 'loadAdminMenus'));
+            $this->menu_loader_already_add = true;
+        }
+    }
+    
+    public function loadWithAdmin()
+    {
+        if ($this->isLoadedWithAdmin()===false) {
+            if ( ! defined('WP_ADMIN') )
+                    define('WP_ADMIN', true);
+
+            if ( ! defined('WP_NETWORK_ADMIN') )
+                    define('WP_NETWORK_ADMIN', false);
+
+            if ( ! defined('WP_USER_ADMIN') )
+                    define('WP_USER_ADMIN', false);
+
+            if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
+                    define('WP_BLOG_ADMIN', true);
+            }
+            require_once $this->wordpress_location.'/wp-load.php';            
+            require $this->wordpress_location.'/wp-admin/includes/admin.php'; 
+             
+            foreach (get_defined_vars() as $key=>$value) {
+                if(!isset($GLOBALS[$key])){
+                    $GLOBALS[$key] = $value;
+                }
             }
         }
         $this->loadShortcodes();
