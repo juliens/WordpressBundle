@@ -35,4 +35,8 @@ class SymfonyAdminMenu implements AdminMenu
         return 110;
     }
 
+    public function getCapability()
+    {
+        return 'manage_options';
+    }
 }
