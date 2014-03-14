@@ -10,5 +10,6 @@ interface AdminMenu
     public function getTitlePage();
     public function process();
     public function getPosition();
+    public function getCapability();
 
 }

@@ -16,7 +16,7 @@ class WordpressAdminMenuLoader
         foreach ($menus as $menu) {
             if (!isset($this->loadedMenu[$menu->getId()]) || $this->loadedMenu[$menu->getId()]===false) {
                 $this->loadAdminMenu[$menu->getId()] = true;
-                add_menu_page($menu->getTitlePage(), $menu->getMenuItemName(), 'manage_options', $menu->getId(), array($menu, 'process'), $menu->getMenuItemImageUrl(), $menu->getPosition() ); 
+                add_menu_page($menu->getTitlePage(), $menu->getMenuItemName(), $menu->getCapability(), $menu->getId(), array($menu, 'process'), $menu->getMenuItemImageUrl(), $menu->getPosition() );
             }
         }
     }
