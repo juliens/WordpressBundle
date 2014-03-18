@@ -258,8 +258,12 @@ class WordpressLoader
                         $titleSeo = wpseo_get_value( 'title', $object->ID );
                     }elseif($this->category_loaded){
                         $titleSeo = wpseo_get_term_meta( $object, $object->taxonomy, 'title' );
-                    }                  
-                    echo $titleSeo;
+                    }
+                    if($titleSeo){
+                       echo $titleSeo; 
+                    }else{
+                       the_title();  
+                    } 
                 }else{
                     the_title(); 
                 }               
