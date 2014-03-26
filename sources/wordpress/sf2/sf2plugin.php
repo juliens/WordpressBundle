@@ -73,27 +73,33 @@ class Sf2Plugin {
             if ($this->container->get('session')->isStarted() == false) {
                 $this->container->get('session')->start();
             }
+            if ($url!=null) {
+                $this->overloadUrlContext($url);
+            }
         } else {
             $this->kernel = $kernel;
             $this->container = $kernel->getContainer();
-        }
-        if ($url!=null) {
-            preg_match('%([^:]*):\/\/([^\/]*)(\/.*)%', $url, $matches);
-            if (count($matches)==4) {
-                $context = $this->container->get('router')->getContext();
-                $context->setHost($matches[2]);
-                $context->setScheme($matches[1]);
-                $context->setBaseUrl($matches[3]);
-            } else {
-                add_action( 'admin_footer', array( $this, 'symfony2_url_warning' ) );
-
-            }
         }
         $wp_loader = $this->container->get('wordpress.loader');
         $wp_loader->load();
 
 
     }
+
+    private function overloadUrlContext($url)
+    {
+        preg_match('%([^:]*):\/\/([^\/]*)(\/.*)%', $url, $matches);
+        if (count($matches)==4) {
+            $context = $this->container->get('router')->getContext();
+            $context->setHost($matches[2]);
+            $context->setScheme($matches[1]);
+            $context->setBaseUrl($matches[3]);
+        } else {
+            add_action( 'admin_footer', array( $this, 'symfony2_url_warning' ) );
+
+        }
+    }
+
     public function symfony2_url_warning()
     {
         echo "<div id='message' class='error'>";
