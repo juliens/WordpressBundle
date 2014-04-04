@@ -88,7 +88,7 @@ class Sf2Plugin {
 
     private function overloadUrlContext($url)
     {
-        preg_match('%([^:]*):\/\/([^\/]*)(\/.*)%', $url, $matches);
+        preg_match('%([^:]*):\/\/([^\/]*)(\/?.*)%', $url, $matches);
         if (count($matches)==4) {
             $context = $this->container->get('router')->getContext();
             $context->setHost($matches[2]);
