@@ -318,4 +318,9 @@ class WordpressLoader
         return get_option('siteurl').'/wp-admin/post.php?post='.$page_id.'&action=edit';
     }
 
+    public function getUserByLogin($login)
+    {
+        require $this->wordpress_location.'/wp-includes/pluggable.php';
+        return get_user_by('login', $login);
+    }
 }
