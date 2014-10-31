@@ -247,26 +247,51 @@ class WordpressLoader
 
     public function getTitle()
     {
-        if ($this->title_is_loaded===false) {
+        if ($this->title_is_loaded === false) {
             $this->title_is_loaded = true;
-            if ($this->post_loaded || $this->category_loaded) {                
+            if ($this->post_loaded || $this->category_loaded) {
                 $this->loadTheQuery();
-                ob_start();                
-                $object = $GLOBALS['wp_query']->get_queried_object();                
-                if(function_exists('wpseo_get_value')) {//on regarde si le plugin WordpressSEO est présent
-                    if($this->post_loaded){
-                        $titleSeo = wpseo_get_value( 'title', $object->ID );
-                    }elseif($this->category_loaded){
-                        $titleSeo = wpseo_get_term_meta( $object, $object->taxonomy, 'title' );
+                ob_start();
+                $object = $GLOBALS['wp_query']->get_queried_object();
+
+                if (function_exists('get_plugin_data') !== true) {
+                    require_once $this->wordpress_location.'/wp-admin/includes/plugin.php';
+                }
+
+                if (file_exists($this->wordpress_location.'/wp-content/plugins/wordpress-seo/wp-seo.php') === true) {
+                    $arDataWpSeo = get_plugin_data($this->wordpress_location.'/wp-content/plugins/wordpress-seo/wp-seo.php');
+                    if (isset ($arDataWpSeo['Version']) === true) {
+                        $isRecentWpSeoVersion = version_compare ($arDataWpSeo['Version'], '1.5.0', '>=');
+
+                        if ($isRecentWpSeoVersion === false) {
+                            if ($this->post_loaded) {
+                                if (function_exists('wpseo_get_value')) {
+                                    $titleSeo = wpseo_get_value('title', $object->ID);
+                                }
+                            } elseif($this->category_loaded) {
+                                if (function_exists('wpseo_get_term_meta')) {
+                                    $titleSeo = wpseo_get_term_meta($object, $object->taxonomy, 'title');
+                                }
+                            }
+                        } else {
+                            if ($this->post_loaded) {
+                                if (method_exists('\WPSEO_Meta','get_value')) {
+                                    $titleSeo = \WPSEO_Meta::get_value('title', $object->ID);
+                                }
+                            } elseif($this->category_loaded) {
+                                if (method_exists('\WPSEO_Taxonomy_Meta','get_term_meta')) {
+                                    $titleSeo = \WPSEO_Taxonomy_Meta::get_term_meta($object, $object->taxonomy, 'title');
+                                }
+                            }
+                        }
                     }
-                    if($titleSeo){
-                       echo $titleSeo; 
-                    }else{
-                       the_title();  
-                    } 
-                }else{
-                    the_title(); 
-                }               
+                }
+
+                if (isset ($titleSeo) === true) {
+                    echo $titleSeo;
+                } else {
+                    the_title();
+                }
                 $this->title = ob_get_clean();
             }
         }
