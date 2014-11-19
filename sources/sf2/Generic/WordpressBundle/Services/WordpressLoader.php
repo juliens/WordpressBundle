@@ -348,4 +348,10 @@ class WordpressLoader
         require $this->wordpress_location.'/wp-includes/pluggable.php';
         return get_user_by('login', $login);
     }
+
+    public function getUserConnected()
+    {
+        require $this->wordpress_location.'/wp-includes/pluggable.php';
+        return wp_get_current_user();
+    }
 }
