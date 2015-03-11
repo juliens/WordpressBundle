@@ -115,4 +115,9 @@ class Post
         }
         return $this->tags;
     }
+
+    public function trash()
+    {
+        return wp_trash_post($this->wp_post->ID);
+    }
 }
