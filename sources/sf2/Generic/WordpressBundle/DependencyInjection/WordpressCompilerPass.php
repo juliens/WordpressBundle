@@ -16,10 +16,15 @@ class WordpressCompilerPass implements CompilerPassInterface
 
         $wordpress_loader_definition = $container->getDefinition('wordpress.loader');
 
-        $shortcodes_service_ids = $container->findTaggedServiceIds('wordpress.shortcode');
+        $shortcodesLists = array(
+            $container->findTaggedServiceIds('wordpress.shortcodeRender'),
+            $container->findTaggedServiceIds('wordpress.shortcodeGallery')
+        );
 
-        foreach ($shortcodes_service_ids as $id=>$attr) {
-            $wordpress_loader_definition->addMethodCall('addShortcode', array(new Reference($id)));
+        foreach ($shortcodesLists as $shortcodes) {
+            foreach ($shortcodes as $id=>$attr) {
+                $wordpress_loader_definition->addMethodCall('addShortcode', array(new Reference($id)));
+            }
         }
 
         $metaboxes_service_ids = $container->findTaggedServiceIds('wordpress.metabox');

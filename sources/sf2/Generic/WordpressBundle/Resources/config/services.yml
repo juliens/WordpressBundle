@@ -5,6 +5,7 @@ parameters:
     wordpress.metabox_loader.class: Generic\WordpressBundle\Services\WordpressMetaboxLoader
     wordpress.admin_menu_loader.class: Generic\WordpressBundle\Services\WordpressAdminMenuLoader
     wordpress.shortcode_render.class: Generic\WordpressBundle\Services\ShortcodeRender
+    wordpress.shortcode_gallery.class: Generic\WordpressBundle\Services\ShortcodeGallery
     wordpress.post_repository.class: Generic\WordpressBundle\Repository\WordpressPostRepository
     wordpress.post_factory.class: Generic\WordpressBundle\Repository\WordpressPostFactory
     wordpress.admin_menu_symfony.class: Generic\WordpressBundle\Services\SymfonyAdminMenu
@@ -38,8 +39,14 @@ services:
    class: %wordpress.shortcode_render.class%
    arguments: [ @templating.helper.actions, @router ]
    tags:
-    - { name: wordpress.shortcode }
-    
+    - { name: wordpress.shortcodeRender }
+
+  wordpress.shortcode_gallery:
+   class: %wordpress.shortcode_gallery.class%
+   arguments: ['gallery_shortcode']
+   tags:
+    - { name: wordpress.shortcodeGallery }
+
   wordpress.admin_menu_symfony:
    class: %wordpress.admin_menu_symfony.class%
    tags:
