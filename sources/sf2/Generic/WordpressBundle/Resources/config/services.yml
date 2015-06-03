@@ -39,13 +39,13 @@ services:
    class: %wordpress.shortcode_render.class%
    arguments: [ @templating.helper.actions, @router ]
    tags:
-    - { name: wordpress.shortcodeRender }
+    - { name: wordpress.shortcode }
 
   wordpress.shortcode_gallery:
    class: %wordpress.shortcode_gallery.class%
    arguments: ['gallery_shortcode']
    tags:
-    - { name: wordpress.shortcodeGallery }
+    - { name: wordpress.shortcode }
 
   wordpress.admin_menu_symfony:
    class: %wordpress.admin_menu_symfony.class%
