@@ -18,7 +18,7 @@ class ShortcodeGallery implements Shortcode
 
     public function process($params=array())
     {
-        $attr = [];
+        $attr = array();
         $post = get_post();
 
         static $instance = 0;
