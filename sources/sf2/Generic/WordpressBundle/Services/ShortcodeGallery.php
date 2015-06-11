@@ -130,7 +130,8 @@ class ShortcodeGallery implements Shortcode
         $output .= "<img src='{$thumb}' alt='Image {$id}' class='photo-thumb' />";
         $output .= '</a>';
         $output .= '</span>';
-        $output .= '<span class="number-resume">'.$nbPhotos.'</span> ';
+        $output .= "<span class='title-block-photo'><strong>{$first->post_title}</strong></span>";
+        $output .= '<span class="number-resume">'.$nbPhotos.'</span>';
         $output .= "<span class='icon-photo-small'></span><div class='hidden'>";
 
         $i = 0;
@@ -144,7 +145,7 @@ class ShortcodeGallery implements Shortcode
             $thumb = implode('/', $thumb);
 
             $class = (0 === $i) ? ' class="photo-thumb"' : null;
-            $image_output = "<a class='fancybox' rel='{$selector}' href='{$path}' title='{$attachment->post_excerpt}'>";
+            $image_output = "<a class='fancybox' rel='{$selector}' href='{$path}' title=\"{$attachment->post_excerpt}\">";
             $image_output .= "<img src='{$thumb}' alt='Image {$id}'{$class} />";
             $image_output .= '</a>';
 
