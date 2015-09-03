@@ -59,6 +59,10 @@ services:
     class: %wordpress.post_repository.class%
     arguments: [ @wordpress.loader, @wordpress.post_factory ]
 
+  wordpress.comment_repository:
+    class: %wordpress.comment_repository.class%
+    arguments: [ @wordpress.loader ]
+
   wordpress.wordpress_extension:
     class: %wordpress.wordpress_extension.class%
     arguments: [ @wordpress.loader ]
