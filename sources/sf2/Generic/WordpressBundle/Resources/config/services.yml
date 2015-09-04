@@ -9,6 +9,7 @@ parameters:
     wordpress.post_repository.class: Generic\WordpressBundle\Repository\WordpressPostRepository
     wordpress.post_factory.class: Generic\WordpressBundle\Repository\WordpressPostFactory
     wordpress.admin_menu_symfony.class: Generic\WordpressBundle\Services\SymfonyAdminMenu
+    wordpress.comment_repository.class: Generic\WordpressBundle\Repository\WordpressCommentRepository
     wordpress.controller_resolver.class: Generic\WordpressBundle\Resolver\ControllerResolver
     wordpress.wordpress_extension.class: Generic\WordpressBundle\Extension\WordpressExtension
     wordpress.template: GenericWordpressBundle:Default:post.html.twig
