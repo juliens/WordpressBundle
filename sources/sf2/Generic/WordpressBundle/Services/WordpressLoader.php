@@ -22,6 +22,8 @@ class WordpressLoader
     private $metaboxes_loader_already_add = false;
     private $title = null;
     private $title_is_loaded = false;
+    private $h1 = null;
+    private $title_h1 = false;
     private $head_is_loaded = false;
     private $head = null;
     private $post_loaded = false;
@@ -76,7 +78,7 @@ class WordpressLoader
     {
         return function_exists('wp_head');
     }
-    
+
     public function isLoadedWithAdmin()
     {
         return function_exists('is_plugin_active');
@@ -100,7 +102,7 @@ class WordpressLoader
             $this->menu_loader_already_add = true;
         }
     }
-    
+
     public function loadWithAdmin()
     {
         if ($this->isLoadedWithAdmin()===false) {
@@ -116,9 +118,9 @@ class WordpressLoader
             if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
                     define('WP_BLOG_ADMIN', true);
             }
-            require_once $this->wordpress_location.'/wp-load.php';            
-            require $this->wordpress_location.'/wp-admin/includes/admin.php'; 
-             
+            require_once $this->wordpress_location.'/wp-load.php';
+            require $this->wordpress_location.'/wp-admin/includes/admin.php';
+
             foreach (get_defined_vars() as $key=>$value) {
                 if(!isset($GLOBALS[$key])){
                     $GLOBALS[$key] = $value;
@@ -225,24 +227,39 @@ class WordpressLoader
         $GLOBALS['category'] = $category;
         return true;
     }
-    
+
     private function loadTheQuery()
     {
         if($this->post_loaded){
             $args = array(
                 'p' => $GLOBALS['post']->ID,
                 'post_type' => array ('page','post'),
-            );  
-        }elseif($this->category_loaded){            
+            );
+        }elseif($this->category_loaded){
             $args = array(
-                'cat' => $GLOBALS['category']->term_id,                
+                'cat' => $GLOBALS['category']->term_id,
             );
         }
         $query = new \WP_Query($args);
         $GLOBALS['wp_the_query'] = $query;
         $GLOBALS['wp_query'] = $query;
-        
+
         return true;
+    }
+
+    public function getH1()
+    {
+        if ($this->title_h1 === false) {
+            $this->title_h1 = true;
+            if ($this->post_loaded || $this->category_loaded) {
+                $this->loadTheQuery();
+                ob_start();
+                the_title();
+                $this->h1 = ob_get_clean();
+            }
+        }
+
+        return $this->h1;
     }
 
     public function getTitle()

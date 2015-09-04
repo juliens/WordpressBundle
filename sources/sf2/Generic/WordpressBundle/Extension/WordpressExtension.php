@@ -35,7 +35,10 @@ class WordpressExtension extends \Twig_Extension
 
     public function getTokenParsers()
     {
-        return array(new WordpressTitleTokenParser());
+        return array(
+            new WordpressTitleTokenParser(),
+            new WordpressTitleH1TokenParser(),
+        );
     }
 
     public function getGlobals()
