@@ -15,10 +15,10 @@ class WordpressCommentRepository
         $this->wordpress_loader->load();
     }
 
-    public function findByPostId($post_id)
+    public function findByPostId($post_id, $status = 'approve')
     {
         $query = new \WP_Comment_Query;
-        return $query->query(array('post_id' => $post_id));
+        return $query->query(array('post_id' => $post_id, 'status' => $status));
     }
 }
 
