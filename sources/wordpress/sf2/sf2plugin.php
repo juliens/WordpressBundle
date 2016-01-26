@@ -14,7 +14,7 @@ class Sf2Plugin {
 
     private function isValidSymfonyPath($dir)
     {
-        return (file_exists($dir.'app/bootstrap.php.cache'));
+        return (file_exists($dir.'var/bootstrap.php.cache'));
     }
 
     private function calculatePath()
@@ -63,7 +63,8 @@ class Sf2Plugin {
 
 
         if ($kernel==null) {
-            $loader = require_once $path.'app/bootstrap.php.cache';
+            $loader = require_once $path.'var/bootstrap.php.cache';
+            $autoload= require_once $path.'app/autoload.php';
             require_once  $path.'app/AppKernel.php';
             $kernel = new AppKernel($env, true);
             $kernel->loadClassCache();
