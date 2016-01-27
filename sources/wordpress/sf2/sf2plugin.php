@@ -6,6 +6,7 @@ Version: 1.0
  */
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Sf2Plugin {
     private $container = null;
@@ -83,7 +84,10 @@ class Sf2Plugin {
         }
         $wp_loader = $this->container->get('wordpress.loader');
         $wp_loader->load();
-
+        
+        $request = Request::createFromGlobals();
+        $response = new Response();
+        $kernel->terminate($request, $response);
 
     }
 
