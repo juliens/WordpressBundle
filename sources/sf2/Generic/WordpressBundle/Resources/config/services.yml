@@ -13,19 +13,20 @@ parameters:
     wordpress.controller_resolver.class: Generic\WordpressBundle\Resolver\ControllerResolver
     wordpress.wordpress_extension.class: Generic\WordpressBundle\Extension\WordpressExtension
     wordpress.template: GenericWordpressBundle:Default:post.html.twig
+    symfony.template.helper.actions.helper: Symfony\Bundle\FrameworkBundle\Templating\Helper\ActionsHelper
 
 services:
   wordpress.security.authentication.provider:
     class:  Generic\WordpressBundle\Security\WordpressAuthenticationProvider
-    arguments: [ '', @service_container, 'wordpress.loader', %wordpress.url_login% ]
+    arguments: [ '', '@service_container', 'wordpress.loader', %wordpress.url_login% ]
 
   wordpress.security.authentication.listener:
     class:  Generic\WordpressBundle\Security\WordpressAuthenticationListener
-    arguments: [@security.context, @security.authentication.manager]
+    arguments: ['@security.firewall.map.context.main', '@security.authentication.manager']
 
   wordpress.loader:
     class : %wordpress.loader.class% 
-    arguments: [ %kernel.root_dir%/../wordpress, @wordpress.shortcode_loader, @wordpress.metabox_loader, @wordpress.admin_menu_loader, @wordpress.post_factory ]
+    arguments: [ %kernel.root_dir%/../wordpress, '@wordpress.shortcode_loader', '@wordpress.metabox_loader', '@wordpress.admin_menu_loader', '@wordpress.post_factory' ]
 
   wordpress.shortcode_loader:
    class: %wordpress.shortcode_loader.class%
@@ -38,9 +39,15 @@ services:
 
   wordpress.shortcode_render:
    class: %wordpress.shortcode_render.class%
-   arguments: [ @templating.helper.actions, @router ]
+   arguments: [ '@templating.helper.actions', '@router' ]
    tags:
     - { name: wordpress.shortcode }
+
+  templating.helper.actions:
+   class: %symfony.template.helper.actions.helper%
+   arguments: [ '@fragment.handler' ]
+   tags:
+    - { name: templating.helper, alias: actions }
 
   wordpress.shortcode_gallery:
    class: %wordpress.shortcode_gallery.class%
@@ -58,15 +65,15 @@ services:
 
   wordpress.post_repository:
     class: %wordpress.post_repository.class%
-    arguments: [ @wordpress.loader, @wordpress.post_factory ]
+    arguments: [ '@wordpress.loader', '@wordpress.post_factory' ]
 
   wordpress.comment_repository:
     class: %wordpress.comment_repository.class%
-    arguments: [ @wordpress.loader ]
+    arguments: [ '@wordpress.loader' ]
 
   wordpress.wordpress_extension:
     class: %wordpress.wordpress_extension.class%
-    arguments: [ @wordpress.loader ]
+    arguments: [ '@wordpress.loader' ]
     tags:
       - { name: twig.extension }
 
