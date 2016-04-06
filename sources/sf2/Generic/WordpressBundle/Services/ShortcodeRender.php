@@ -20,12 +20,12 @@ class ShortcodeRender implements Shortcode
         return "sf2_render";
     }
 
-    public function process($params=array())
+    public function process($params = array())
     {
 
         if (isset($params['_route'])) {
             $route = $this->router->getRouteCollection()->get($params['_route']);
-            if ($route!=null) {
+            if ($route != null) {
                 $params = array_merge($route->getDefaults(), $params);
             }
         }
@@ -34,10 +34,11 @@ class ShortcodeRender implements Shortcode
 
     private function isControllerString($route)
     {
-        return (count(explode(':', $route))>=3);
+        return (count(explode(':', $route)) >= 3);
     }
 
-    protected function render($params = array()) {
+    protected function render($params = array())
+    {
         if (!isset($params['_controller']) || !$this->isControllerString($params['_controller'])) {
             throw new \Exception('Vous n\'avez pas précisé de controller valide');
         }
@@ -49,6 +50,7 @@ class ShortcodeRender implements Shortcode
             $request = Request::createFromGlobals();
             $request = $request->duplicate(null, null, $params);
             $response = $kernel->handle($request);
+            $kernel->terminate($request, $response);
             return $response->getContent();
         }
 
