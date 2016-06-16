@@ -304,7 +304,7 @@ class WordpressLoader
                     }
                 }
 
-                if (isset ($titleSeo) === true) {
+                if (isset ($titleSeo) === true && !empty($titleSeo)) {
                     echo $titleSeo;
                 } else {
                     the_title();
