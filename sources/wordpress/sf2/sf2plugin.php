@@ -14,9 +14,17 @@ class Sf2Plugin
     private $kernel = null;
     private $in_sf2 = true;
 
-    private function isValidSymfonyPath($dir)
+    private function getDirCacheSymfony($dir)
     {
-        return (file_exists($dir . 'var/bootstrap.php.cache'));
+        $dirCache = 'app';
+        if(is_dir($dir.'/var')){
+            $dirCache = 'var';
+        }
+        return $dirCache; 
+    }
+    private function isValidSymfonyPath($dir)
+    {        
+        return (file_exists($dir . $this->getDirCacheSymfony($dir) .'/bootstrap.php.cache'));
     }
 
     private function calculatePath()
@@ -63,8 +71,12 @@ class Sf2Plugin
         }
 
         if ($kernel == null) {
-            $loader = require_once $path . 'var/bootstrap.php.cache';
-            $autoload = require_once $path . 'app/autoload.php';
+            
+            $dircache =  $this->getDirCacheSymfony($path);
+            $loader = require_once $path . $dircache .'/bootstrap.php.cache';
+            if($dircache == 'var'){
+                $autoload = require_once $path . 'app/autoload.php';
+            }
             require_once $path . 'app/AppKernel.php';
             $debug = true;
             if ($env == 'prod') {

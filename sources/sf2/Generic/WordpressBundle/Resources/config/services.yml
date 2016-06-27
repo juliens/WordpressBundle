@@ -1,5 +1,5 @@
 parameters:
-    wordpress.url_login: '' 
+    wordpress.url_login: ''
     wordpress.loader.class: Generic\WordpressBundle\Services\WordpressLoader
     wordpress.shortcode_loader.class: Generic\WordpressBundle\Services\WordpressShortcodeLoader
     wordpress.metabox_loader.class: Generic\WordpressBundle\Services\WordpressMetaboxLoader
@@ -22,7 +22,7 @@ services:
 
   wordpress.security.authentication.listener:
     class:  Generic\WordpressBundle\Security\WordpressAuthenticationListener
-    arguments: ['@security.firewall.map.context.main', '@security.authentication.manager']
+    arguments: ['@security.token_storage', '@security.authentication.manager']
 
   wordpress.loader:
     class : %wordpress.loader.class% 
@@ -30,7 +30,7 @@ services:
 
   wordpress.shortcode_loader:
    class: %wordpress.shortcode_loader.class%
-  
+
   wordpress.metabox_loader:
    class: %wordpress.metabox_loader.class%
 
@@ -76,8 +76,3 @@ services:
     arguments: [ '@wordpress.loader' ]
     tags:
       - { name: twig.extension }
-
-#  wordpress.controller_resolver:
-#    class: %wordpress.controller_resolver.class%
-#    arguments: [@default.controller_resolver, @service_container ]
-
