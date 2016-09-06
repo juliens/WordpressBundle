@@ -53,12 +53,10 @@ class Post
         }
         if ($this->wp_post->ID!=null) {
             $this->metas = get_metadata('post', $this->wp_post->ID);
-            if(!empty($this->metas["_thumbnail_id"])){
-                $idAttachment = $this->getMeta("_thumbnail_id");
-                if(!empty($idAttachment)){
-                    $link = wp_get_attachment_image_src($idAttachment[0]);
-                    $this->linkImg = $link[0];
-                }
+            $idAttachment = $this->getMeta("_thumbnail_id");
+            if(!empty($idAttachment)){
+                $link = wp_get_attachment_image_src($idAttachment[0]);
+                $this->linkImg = $link[0];
             }
         }
     }
