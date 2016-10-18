@@ -94,9 +94,18 @@ class Sf2Plugin
                 $this->overloadUrlContext($url);
             }
         } else {
+            
             if ($this->kernel instanceof AppCache) {
+                if (!is_subclass_of($kernel->getKernel(), 'Symfony\Component\HttpKernel\KernelInterface')) {
+                    throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
+                }
+
                 $this->container = $kernel->getKernel()->getContainer();
             } else {
+                if (!is_subclass_of($kernel, 'Symfony\Component\HttpKernel\KernelInterface')) {
+                    throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
+                }
+
                 $this->container = $kernel->getContainer();
             }
         }
