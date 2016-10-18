@@ -94,8 +94,11 @@ class Sf2Plugin
                 $this->overloadUrlContext($url);
             }
         } else {
-            $this->kernel = $kernel;
-            $this->container = $kernel->getContainer();
+            if ($this->kernel instanceof AppCache) {
+                $this->container = $kernel->getKernel()->getContainer();
+            } else {
+                $this->container = $kernel->getContainer();
+            }
         }
         $wp_loader = $this->container->get('wordpress.loader');
         $wp_loader->load();
