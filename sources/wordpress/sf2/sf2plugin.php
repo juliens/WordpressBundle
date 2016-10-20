@@ -97,9 +97,6 @@ class Sf2Plugin
             $this->kernel = $kernel;
             
             if ($this->kernel instanceof AppCache) {
-                if (!is_subclass_of($this->kernel->getKernel(), 'Symfony\Component\HttpKernel\KernelInterface')) {
-                    throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
-                }
                 $this->kernel = $this->kernel->getKernel();
             }
 
