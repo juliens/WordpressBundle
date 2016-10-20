@@ -94,20 +94,20 @@ class Sf2Plugin
                 $this->overloadUrlContext($url);
             }
         } else {
+            $this->kernel = $kernel;
             
             if ($this->kernel instanceof AppCache) {
-                if (!is_subclass_of($kernel->getKernel(), 'Symfony\Component\HttpKernel\KernelInterface')) {
+                if (!is_subclass_of($this->kernel->getKernel(), 'Symfony\Component\HttpKernel\KernelInterface')) {
                     throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
                 }
-
-                $this->container = $kernel->getKernel()->getContainer();
-            } else {
-                if (!is_subclass_of($kernel, 'Symfony\Component\HttpKernel\KernelInterface')) {
-                    throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
-                }
-
-                $this->container = $kernel->getContainer();
+                $this->kernel = $this->kernel->getKernel();
             }
+
+            if (!is_subclass_of($this->kernel, 'Symfony\Component\HttpKernel\KernelInterface')) {
+                throw new RuntimeException("Le kernel doit implémenter Symfony\Component\HttpKernel\KernelInterface");
+            }
+
+            $this->container = $this->kernel->getContainer();
         }
         $wp_loader = $this->container->get('wordpress.loader');
         $wp_loader->load();
